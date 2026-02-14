@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: 'Amiri', serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 3s ease-in-out;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.lava-mode {
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.lava-mode::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.8) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.9) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(255, 105, 180, 0.7) 0%, transparent 70%),
+                radial-gradient(circle at 30% 80%, rgba(147, 112, 219, 0.8) 0%, transparent 55%),
+                radial-gradient(circle at 70% 20%, rgba(255, 20, 147, 0.6) 0%, transparent 65%);
+            filter: blur(40px) contrast(2) brightness(1.2);
+            animation: lavaFlow 15s ease-in-out infinite;
+            mix-blend-mode: screen;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+
+        body.lava-mode.active::before {
+            opacity: 1;
+        }
+
+        body.lava-mode::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 60% 40%, rgba(139, 0, 0, 0.6) 0%, transparent 45%),
+                radial-gradient(circle at 40% 60%, rgba(255, 105, 180, 0.5) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 112, 219, 0.7) 0%, transparent 60%);
+            filter: blur(60px) contrast(1.5) brightness(1.1);
+            animation: lavaFlowReverse 20s ease-in-out infinite;
+            mix-blend-mode: screen;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+
+        body.lava-mode.active::after {
+            opacity: 1;
+        }
+
+        @keyframes lavaFlow {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                filter: blur(40px) contrast(2) brightness(1.2);
+            }
+            25% { 
+                transform: translate(30px, -20px) scale(1.1);
+                filter: blur(45px) contrast(2.2) brightness(1.3);
+            }
+            50% { 
+                transform: translate(-20px, 30px) scale(0.9);
+                filter: blur(35px) contrast(1.8) brightness(1.1);
+            }
+            75% { 
+                transform: translate(40px, 10px) scale(1.05);
+                filter: blur(50px) contrast(2.5) brightness(1.4);
+            }
+        }
+
+        @keyframes lavaFlowReverse {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                filter: blur(60px) contrast(1.5) brightness(1.1);
+            }
+            33% { 
+                transform: translate(-30px, 20px) scale(1.2) rotate(120deg);
+                filter: blur(70px) contrast(1.8) brightness(1.3);
+            }
+            66% { 
+                transform: translate(20px, -30px) scale(0.8) rotate(240deg);
+                filter: blur(55px) contrast(1.3) brightness(0.9);
+            }
+        }
+
+        #text-container {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            text-align: center;
+            padding: clamp(10px, 3vw, 20px);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            max-width: 90%;
+            line-height: 1.6;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .english-text {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(255, 255, 255, 0.6),
+                0 0 60px rgba(255, 255, 255, 0.4),
+                0 0 80px rgba(255, 105, 180, 0.8),
+                0 0 100px rgba(255, 20, 147, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            position: relative;
+        }
+
+        #action-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            cursor: pointer;
+            border-radius: 25px;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: none;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            letter-spacing: 3px;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: uppercase;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        #action-btn:hover::before {
+            left: 100%;
+        }
+
+        #action-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        #action-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        #continue-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        #continue-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        #continue-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        #continue-btn:hover::before {
+            left: 100%;
+        }
+
+        /* لتمييز الجمل الخاصة بك بخط مختلف قليلاً إذا أردت */
+        .user-msg {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        /* تحسينات للهواتف */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            
+            #text-container {
+                max-width: 95%;
+                padding: 15px;
+            }
+            
+            #action-btn {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #text-container {
+                font-size: 1.1rem;
+                padding: 10px;
+            }
+            
+            #action-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="background-music" autoplay loop>
+        <source src="i wanna be yours ( s l o w e d  &  r e v e r b ).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- شاشة البداية -->
+    <div id="welcome-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center;">
+        <div id="welcome-message" style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-family: 'Amiri', serif; margin-bottom: 30px; opacity: 0; transition: opacity 2s ease-in;">
+            انتي اغلى ما عندي دائما و ابدا
+        </div>
+        <button id="continue-btn" style="background: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.8); padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border-radius: 25px; font-family: 'Georgia', serif; letter-spacing: 2px; font-style: italic; opacity: 0; transition: all 0.6s ease; -webkit-tap-highlight-color: transparent;">
+            الاستمرار
+        </button>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div id="main-content" style="display: none;">
+        <div id="text-container"></div>
+        <button id="action-btn">CLICK HERE SWEETHEART</button>
+    </div>
+    
+    <script>
+        // الشعر الذي ألفته (المرحلة الأولى)
+        const poemLines = [
+            "يا من سكنتِ الروحَ قبلَ ملامحي...",
+            "وغدوتِ في ليلي النجومَ السارية",
+            "كل الأماكنِ دون طيفكِ غربةٌ...",
+            "وأنتِ وحدكِ... في فؤادي باقية"
+        ];
+
+        // الرسائل الخاصة بك (المرحلة الثانية)
+        const userMessages = [
+            "أحببتكِ حتى صار قلبي موطناً لخطواتكِ الأولى وهمسكِ الخفي",
+            "كل يوم يمر هو فرصة للحلم الذي أريده معكِ",
+            "لو علمت أن الحلم يجمعكِ بي لوددت أن أغمض طول الدهر... أجفاني",
+            "أن تعلمين أني دائماً هنا من أجلك",
+            "لطالما كنتِ تعنين لي الكثير حتى لو كنتِ تظنين أني نسيتك... أنا لم أنسك",
+            "I WANNA BE YOURS"
+        ];
+
+        const textContainer = document.getElementById('text-container');
+        const actionBtn = document.getElementById('action-btn');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const continueBtn = document.getElementById('continue-btn');
+        const mainContent = document.getElementById('main-content');
+
+        // دالة لعرض النصوص بتأثير الظهور والاختفاء
+        function playSequence(lines, callback, isFinalSequence = false) {
+            let i = 0;
+
+            function showNext() {
+                if (i >= lines.length) {
+                    if (callback) callback();
+                    return;
+                }
+
+                // تغيير النص
+                textContainer.innerHTML = lines[i];
+                
+                // تنسيق خاص للجملة الأخيرة بالإنجليزية
+                if (lines[i] === "I WANNA BE YOURS") {
+                    textContainer.classList.add("english-text");
+                    textContainer.style.fontSize = "2.5rem";
+                    // تفعيل خلفية اللافا مع انتقال سلس
+                    document.body.classList.add("lava-mode");
+                    setTimeout(() => {
+                        document.body.classList.add("active");
+                    }, 100);
+                } else {
+                    textContainer.classList.remove("english-text");
+                    textContainer.classList.add("user-msg");
+                    textContainer.style.fontSize = "2rem";
+                }
+
+                // ظهور
+                textContainer.style.opacity = 1;
+
+                // مدة بقاء النص (أطول قليلاً للجمل الطويلة)
+                let duration = 4000; 
+                if(lines[i] === "I WANNA BE YOURS") duration = 60000; // الجملة الأخيرة تبقى طويلاً
+
+                setTimeout(() => {
+                    // إذا لم تكن الجملة الأخيرة في السلسلة النهائية، نقوم بالإخفاء
+                    if (!(isFinalSequence && i === lines.length - 1)) {
+                        textContainer.style.opacity = 0;
+                        setTimeout(() => {
+                            i++;
+                            showNext();
+                        }, 1500); // وقت الانتظار والنص مخفي قبل ظهور التالي
+                    }
+                }, duration);
+            }
+
+            // التأكد من أن النص مخفي قبل البدء
+            textContainer.style.opacity = 0;
+            setTimeout(showNext, 500);
+        }
+
+        // تشغيل شاشة البداية
+        window.onload = function() {
+            // تشغيل الموسيقى تلقائياً
+            const backgroundMusic = document.getElementById('background-music');
+            backgroundMusic.play().catch(e => {
+                console.log('Autoplay prevented, waiting for user interaction');
+            });
+            
+            // إظهار الرسالة والزر تدريجياً
+            setTimeout(() => {
+                welcomeMessage.style.opacity = 1;
+            }, 500);
+            
+            setTimeout(() => {
+                continueBtn.style.opacity = 1;
+            }, 1500);
+        };
+
+        // عند الضغط على زر الاستمرار
+        continueBtn.addEventListener('click', function() {
+            // إخفاء شاشة البداية
+            welcomeScreen.style.opacity = 0;
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'flex';
+                mainContent.style.flexDirection = 'column';
+                mainContent.style.alignItems = 'center';
+                mainContent.style.justifyContent = 'center';
+                
+                // بدء المرحلة الأولى (الشعر)
+                playSequence(poemLines, function() {
+                    // بعد انتهاء الشعر
+                    setTimeout(() => {
+                        actionBtn.style.display = 'block';
+                        // تأخير بسيط لتفعيل الترانزيشن
+                        setTimeout(() => {
+                             actionBtn.style.opacity = 1;
+                        }, 50);
+                    }, 1000);
+                });
+            }, 1000);
+        });
+
+        // عند الضغط على الزر
+        actionBtn.addEventListener('click', function() {
+            // تشغيل الموسيقى إذا لم تكن تعمل
+            const backgroundMusic = document.getElementById('background-music');
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+            }
+            
+            // إخفاء الزر
+            actionBtn.style.opacity = 0;
+            setTimeout(() => {
+                actionBtn.style.display = 'none';
+                
+                // تشغيل المرحلة الثانية (رسائلك)
+                playSequence(userMessages, null, true);
+            }, 500);
+        });
+
+        // تشغيل الموسيقى عند أول تفاعل مع الصفحة
+        document.addEventListener('click', function() {
+            const backgroundMusic = document.getElementById('background-music');
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+            }
+        }, { once: true });
+
+    </script>
+</body>
+</html>
